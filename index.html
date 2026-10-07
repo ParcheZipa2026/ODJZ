@@ -42,18 +42,29 @@
   .btn:hover{transform:translateY(-2px)}
   .btn-am{background:var(--amarillo);color:var(--azul-noche);box-shadow:0 6px 16px rgba(0,0,0,.15)}
   .btn-bl{background:#fff;color:var(--azul-noche);border:1.5px solid var(--linea)}
+  .btn-ghost{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.5)}
+  a.btn{text-decoration:none}
   .franjas{display:grid;grid-template-columns:repeat(3,1fr);height:10px}
   .franjas i:nth-child(1){background:var(--amarillo)} .franjas i:nth-child(2){background:var(--verde)} .franjas i:nth-child(3){background:var(--coral)}
 
   /* ---------- FILTROS ---------- */
   .filtros{position:sticky;top:0;z-index:20;margin-top:-34px}
   .filtros-in{background:var(--tarjeta);border-radius:var(--radio);box-shadow:0 14px 40px rgba(20,32,74,.14);padding:16px 18px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) auto;gap:12px;align-items:end}
+  .filtros-tit{grid-column:1/-1;display:flex;gap:14px;align-items:center;padding:2px 2px 10px;border-bottom:1px dashed var(--linea);margin-bottom:2px}
+  .filtros-tit .lupa{flex:none;width:46px;height:46px;border-radius:50%;background:var(--amarillo);display:grid;place-items:center;font-size:22px;animation:llamar 2.4s ease-in-out 3}
+  @keyframes llamar{0%,100%{transform:scale(1)}50%{transform:scale(1.12) rotate(-8deg)}}
+  .filtros-tit b{font-size:18px;font-weight:800;display:block;line-height:1.2}
+  .filtros-tit small{font-size:13px;color:var(--suave)}
+  .filtros-tit u{text-decoration:none;font-weight:700;color:var(--azul-osc)}
+  .filtros.pegado .filtros-tit{display:none}
+  .campo label i{font-style:normal;display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;background:var(--azul);color:#fff;font-size:10px;margin-right:4px}
   .campo label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--suave);margin:0 0 5px 4px}
   .campo select{width:100%;appearance:none;border:1.5px solid var(--linea);background:#F8F9FD url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%233A86FF' stroke-width='2' fill='none'/%3E%3C/svg%3E") no-repeat right 14px center;padding:11px 36px 11px 14px;border-radius:14px;font-size:14px;font-weight:500;color:var(--texto);cursor:pointer;text-overflow:ellipsis}
   .campo select:focus{outline:none;border-color:var(--azul);box-shadow:0 0 0 4px rgba(58,134,255,.15)}
   .campo select.activo{border-color:var(--azul);background-color:#EEF4FF}
   .filtros-acc{display:flex;gap:8px}
-  .activos{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;min-height:0}
+  .activos{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px}
+  .activos:empty{display:none}
   .tag{background:var(--azul-noche);color:#fff;font-size:12px;font-weight:600;padding:5px 8px 5px 12px;border-radius:999px;display:inline-flex;gap:6px;align-items:center}
   .tag button{background:rgba(255,255,255,.2);border:0;color:#fff;width:18px;height:18px;border-radius:50%;cursor:pointer;font-size:11px;line-height:1}
 
@@ -118,6 +129,22 @@
   .an p.corto{display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden}
   .an .mas{align-self:flex-start;border:0;background:none;color:var(--azul-osc);font-weight:700;font-size:12.5px;cursor:pointer;padding:0}
 
+  .comp-sel{background:var(--tarjeta);border-radius:var(--radio);box-shadow:var(--sombra);padding:16px 18px;display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:end;margin-bottom:14px}
+  .comp-sel .vs{font-weight:900;font-size:16px;color:var(--azul-noche);background:var(--amarillo);border-radius:50%;width:46px;height:46px;display:grid;place-items:center;margin-bottom:2px}
+  .bola{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:middle}
+  .comp-frase{background:var(--azul-noche);color:#fff;border-radius:16px;padding:14px 18px;font-size:14.5px;margin-bottom:16px}
+  .comp-frase b{color:var(--amarillo)}
+  .comp-tabla{overflow:auto;max-height:420px}
+  .comp-tabla table{font-size:13px}
+  .comp-tabla th{position:static;cursor:default;background:#F3F5FA;color:var(--suave)}
+  .comp-tabla th.ca{color:#C24545}.comp-tabla th.cb{color:var(--azul-osc)}
+  .comp-tabla td{padding:8px 10px}
+  .comp-tabla td:nth-child(2){min-width:0;font-weight:400}
+  .comp-tabla td:first-child{white-space:normal}
+  .comp-card .lienzo{height:400px}
+  .comp-tabla tr.sep td{background:#F8F9FD;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--suave);text-align:left}
+  .sube{color:#3E8A12;font-weight:700}.baja{color:#D04545;font-weight:700}.igual{color:var(--suave)}
+  #tabla tbody{user-select:none;-webkit-user-select:none}
   .nota{margin-top:14px;font-size:12.5px;color:var(--suave);background:#fff;border-left:4px solid var(--amarillo);padding:10px 14px;border-radius:10px}
 
   /* MODAL */
@@ -151,6 +178,7 @@
     .hero-meta{justify-content:center}
     .filtros{position:static}
     .filtros-in{grid-template-columns:1fr 1fr}
+    .comp-sel{grid-template-columns:1fr}.comp-sel .vs{margin:0 auto}
     .filtros-acc{grid-column:1/-1}
     .filtros-acc .btn{flex:1;justify-content:center}
     .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -177,28 +205,34 @@
     <img class="logo" src="logo.png" alt="Observatorio de Juventud de Zipaquirá">
     <div>
       <h1>Datos que cuentan la historia de las <span>juventudes</span> de Zipaquirá</h1>
-      <p class="lead">Consulta, filtra y descarga los indicadores que reportan las secretarías de la Alcaldía sobre jóvenes de 14 a 28 años. Información abierta para investigar, proponer y construir proyectos.</p>
+      <p class="lead">Consulta, filtra y compara los indicadores que reportan las secretarías de la Alcaldía sobre jóvenes de 14 a 28 años. Información abierta para investigar, proponer y construir proyectos.</p>
       <div class="hero-meta">
         <span class="chip"><span class="punto"></span><span id="actualizado">Conectando…</span></span>
-        <button class="btn btn-am" id="btnActualizar">↻ Actualizar datos</button>
+        <a class="btn btn-am" href="#filtros">🔎 Empieza a consultar</a>
+        <button class="btn btn-ghost" id="btnActualizar">↻ Actualizar</button>
       </div>
     </div>
   </div>
 </header>
 <div class="franjas"><i></i><i></i><i></i></div>
 
-<div class="filtros">
+<div id="filtros" style="scroll-margin-top:10px"></div>
+<div class="filtros" id="barraFiltros">
   <div class="wrap">
     <div class="filtros-in">
-      <div class="campo"><label for="fAnio">Año</label><select id="fAnio"></select></div>
-      <div class="campo"><label for="fPeriodo">Periodo</label><select id="fPeriodo"></select></div>
-      <div class="campo"><label for="fSecretaria">Secretaría</label><select id="fSecretaria"></select></div>
-      <div class="campo"><label for="fIndicador">Indicador</label><select id="fIndicador"></select></div>
+      <div class="filtros-tit">
+        <span class="lupa">🔎</span>
+        <div><b>¿Qué quieres consultar?</b><small>Filtra el <u>año</u>, <u>periodo</u>, <u>secretaría</u> o <u>indicador</u>. Todo el tablero cambia según lo que elijas.</small></div>
+      </div>
+      <div class="campo"><label for="fAnio"><i>1</i> Año</label><select id="fAnio"></select></div>
+      <div class="campo"><label for="fPeriodo"><i>2</i> Periodo</label><select id="fPeriodo"></select></div>
+      <div class="campo"><label for="fSecretaria"><i>3</i> Secretaría</label><select id="fSecretaria"></select></div>
+      <div class="campo"><label for="fIndicador"><i>4</i> Indicador</label><select id="fIndicador"></select></div>
       <div class="filtros-acc">
         <button class="btn btn-bl" id="btnLimpiar">Limpiar</button>
       </div>
+      <div class="activos" id="activos"></div>
     </div>
-    <div class="activos" id="activos"></div>
   </div>
 </div>
 
@@ -209,7 +243,7 @@
   <section id="resumen">
     <div class="titulo-sec"><div><span class="eyebrow">Resumen</span><h2>Panorama general<small id="contexto">Todos los indicadores reportados</small></h2></div></div>
     <div class="kpis">
-      <div class="kpi destacado"><div class="v" id="kTotal">0</div><div class="l">Jóvenes reportados en los indicadores</div></div>
+      <div class="kpi destacado"><div class="v" id="kTotal">0</div><div class="l">Atenciones o participaciones de jóvenes</div></div>
       <div class="kpi" style="--c:var(--coral)"><div class="v" id="kInd">0</div><div class="l">Indicadores</div></div>
       <div class="kpi" style="--c:var(--naranja)"><div class="v" id="kSec">0</div><div class="l">Secretarías que reportan</div></div>
       <div class="kpi" style="--c:var(--verde-osc)"><div class="v" id="kMuj">0%</div><div class="l">Son mujeres</div></div>
@@ -242,6 +276,21 @@
     </div>
   </section>
 
+  <!-- COMPARAR -->
+  <section id="comparar">
+    <div class="titulo-sec"><div><span class="eyebrow">Compara</span><h2>Compara dos periodos<small>Usa los filtros de secretaría o indicador para comparar algo específico</small></h2></div></div>
+    <div class="comp-sel">
+      <div class="campo"><label for="cA"><b class="bola" style="background:var(--coral)"></b> Periodo A</label><select id="cA"></select></div>
+      <div class="vs">VS</div>
+      <div class="campo"><label for="cB"><b class="bola" style="background:var(--azul)"></b> Periodo B</label><select id="cB"></select></div>
+    </div>
+    <div class="comp-frase" id="compFrase"></div>
+    <div class="grid">
+      <div class="card c7 comp-card" style="--c:var(--naranja)"><h3>Perfil en cada periodo</h3><div class="sub">Sexo, edad y zona · cambia a porcentaje para comparar proporciones</div><div class="lienzo"><canvas id="gComp"></canvas></div></div>
+      <div class="card c5" style="--c:var(--verde-osc);padding-bottom:8px"><h3>Variación entre periodos</h3><div class="sub">Cuánto subió o bajó cada grupo</div><div class="comp-tabla"><table id="tComp"><thead><tr><th>Grupo</th><th class="ca">A</th><th class="cb">B</th><th>Cambio</th></tr></thead><tbody></tbody></table></div></div>
+    </div>
+  </section>
+
   <!-- ANÁLISIS -->
   <section id="analisis">
     <div class="titulo-sec"><div><span class="eyebrow">¿Qué dicen las secretarías?</span><h2>Análisis por trimestre<small id="anContador"></small></h2></div></div>
@@ -251,11 +300,10 @@
 
   <!-- TABLA -->
   <section id="datos">
-    <div class="titulo-sec"><div><span class="eyebrow">Datos abiertos</span><h2>Explora la base de datos<small>Descarga los datos filtrados para tus investigaciones o proyectos</small></h2></div></div>
+    <div class="titulo-sec"><div><span class="eyebrow">Detalle</span><h2>Explora la base de datos<small>Consulta el detalle de cada indicador según tus filtros</small></h2></div></div>
     <div class="card tabla-card">
       <div class="tabla-top">
         <input class="buscar" id="buscar" placeholder="Buscar indicador, secretaría o periodo…">
-        <button class="btn btn-am" id="btnCsv">⬇ Descargar CSV (Excel)</button>
       </div>
       <div class="tabla-scroll"><table id="tabla"><thead></thead><tbody></tbody></table></div>
     </div>
@@ -288,7 +336,7 @@ const CAMPOS = [
 ];
 
 let DATOS = [], filtro = {anio:'',periodo:'',secretaria:'',indicador:''}, modo = 'n';
-let orden = {campo:'periodo', dir:1}, anVisibles = 9, graficas = {};
+let orden = {campo:'periodo', dir:1}, anVisibles = 9, graficas = {}, comp = {a:'', b:''};
 
 /* ================= UTILIDADES ================= */
 const $ = id => document.getElementById(id);
@@ -330,11 +378,12 @@ function mostrarError(m){ const e=$('error'); e.textContent=m; e.style.display='
 
 /* ================= FILTROS ================= */
 function filtrar(excepto){
+  const ex = [].concat(excepto||[]);
   return DATOS.filter(r =>
-    (excepto==='anio'       || !filtro.anio       || r.anio===filtro.anio) &&
-    (excepto==='periodo'    || !filtro.periodo    || r._p===filtro.periodo) &&
-    (excepto==='secretaria' || !filtro.secretaria || r.secretaria===filtro.secretaria) &&
-    (excepto==='indicador'  || !filtro.indicador  || r.indicador===filtro.indicador));
+    (ex.includes('anio')       || !filtro.anio       || r.anio===filtro.anio) &&
+    (ex.includes('periodo')    || !filtro.periodo    || r._p===filtro.periodo) &&
+    (ex.includes('secretaria') || !filtro.secretaria || r.secretaria===filtro.secretaria) &&
+    (ex.includes('indicador')  || !filtro.indicador  || r.indicador===filtro.indicador));
 }
 function llenarSelect(id, campo, texto, ordenar){
   let ops = unicos(filtrar(campo), campo==='periodo'?'_p':campo);
@@ -471,6 +520,48 @@ function pintarKpis(rows){
   anima($('kRur'), pct(suma(rows,'rural'), zona), '%');
 }
 
+/* ================= COMPARAR PERIODOS ================= */
+const GRUPOS_COMP = [
+  ['Población', [['total','Total atenciones']]],
+  ['Sexo y género', [['hombres','Hombres'],['mujeres','Mujeres'],['nobinarios','No binarios']]],
+  ['Edad', [['e14_17','14 a 17'],['e18_20','18 a 20'],['e21_24','21 a 24'],['e25_28','25 a 28']]],
+  ['Zona', [['rural','Rural'],['urbana','Urbana']]],
+  ['Enfoque diferencial', [['discapacidad','Discapacidad y NEE'],['victimas','Víctimas del conflicto'],['extranjera','Población extranjera'],['calle','Habitante de calle']]]
+];
+function pintarComparar(){
+  const base = filtrar(['anio','periodo']);
+  const k = {}; base.forEach(r=>k[r._p]=r._k);
+  const pers = unicos(base,'_p').sort((a,b)=>k[a]-k[b]);
+  if (!pers.includes(comp.a)) comp.a = pers.length>1 ? pers[pers.length-2] : (pers[0]||'');
+  if (!pers.includes(comp.b)) comp.b = pers[pers.length-1]||'';
+  const ops = sel => pers.map(p=>`<option ${p===sel?'selected':''} value="${esc(p)}">${esc(p)}</option>`).join('');
+  $('cA').innerHTML = ops(comp.a); $('cB').innerHTML = ops(comp.b);
+
+  const rA = base.filter(r=>r._p===comp.a), rB = base.filter(r=>r._p===comp.b);
+  const tA = suma(rA,'total'), tB = suma(rB,'total');
+  const cambio = (a,b) => { if (a===b) return '<span class="igual">= igual</span>';
+    if (!a) return '<span class="sube">▲ nuevo</span>';
+    const p = (b-a)*100/a; return `<span class="${p>0?'sube':'baja'}">${p>0?'▲':'▼'} ${Math.abs(p).toFixed(1)}%</span>`; };
+
+  if (pers.length < 2) $('compFrase').innerHTML = 'Para comparar se necesitan al menos dos periodos con datos en la selección actual.';
+  else if (comp.a===comp.b) $('compFrase').innerHTML = 'Elige dos periodos diferentes para compararlos.';
+  else { const d = tB-tA;
+    $('compFrase').innerHTML = `Entre <b>${esc(comp.a)}</b> y <b>${esc(comp.b)}</b> las atenciones o participaciones de jóvenes pasaron de <b>${fmt(tA)}</b> a <b>${fmt(tB)}</b>: ${d===0?'se mantuvieron iguales':(d>0?'aumentaron':'disminuyeron')+' en <b>'+fmt(Math.abs(d))+'</b>'+(tA?' ('+Math.abs(d*100/tA).toFixed(1)+'%)':'')}.`; }
+
+  $('tComp').tBodies[0].innerHTML = GRUPOS_COMP.map(([g,campos])=>
+    (g!=='Población'?`<tr class="sep"><td colspan="4">${g}</td></tr>`:'') +
+    campos.map(([c,l])=>{ const a=suma(rA,c), b=suma(rB,c);
+      return `<tr><td style="text-align:left;${c==='total'?'font-weight:800':''}">${l}</td><td>${fmt(a)}</td><td>${fmt(b)}</td><td>${cambio(a,b)}</td></tr>`;}).join('')).join('');
+
+  const cats = [['hombres','Hombres'],['mujeres','Mujeres'],['nobinarios','No bin.'],['e14_17','14–17'],['e18_20','18–20'],['e21_24','21–24'],['e25_28','25–28'],['rural','Rural'],['urbana','Urbana']];
+  const serie = (rows,tot,lab,col) => ({label:lab, backgroundColor:col, borderRadius:8, borderSkipped:false, maxBarThickness:28,
+    data: cats.map(([c])=>{ const v=suma(rows,c); return modo==='p' ? pct(v,tot) : v; })});
+  grafica('gComp', {type:'bar',
+    data:{labels:cats.map(c=>c[1]), datasets:[serie(rA,tA,'A · '+comp.a,C.coral), serie(rB,tB,'B · '+comp.b,C.azul)]},
+    options:{maintainAspectRatio:false, scales:ejes(false, modo==='p'),
+      plugins:{legend:{position:'bottom'}, tooltip:{mode:'index', intersect:false, callbacks:{label:c=>` ${c.dataset.label}: ${modo==='p'?c.raw.toFixed(1)+'%':fmt(c.raw)}`}}}}});
+}
+
 /* ================= ANÁLISIS ================= */
 function pintarAnalisis(rows){
   const con = rows.filter(r=>r.analisis && r.analisis.length>3).sort((a,b)=>b._k-a._k);
@@ -511,20 +602,10 @@ function pintarTabla(rows){
     }).join('') + `<td>${r.analisis?`<button class="ver-an" data-i="${DATOS.indexOf(r)}">Ver</button>`:'—'}</td></tr>`).join('')
     : `<tr><td colspan="${CAMPOS.length+1}" class="vacio">No hay datos con estos filtros.</td></tr>`;
 }
-function descargarCsv(){
-  const rows = filasTabla(filtrar());
-  const cab = ['Año',...CAMPOS.map(c=>c[1]),'Análisis'];
-  const lin = rows.map(r=>[r.anio,...CAMPOS.map(([k])=>k==='periodo'?r.periodo:r[k]), r.analisis||'']
-    .map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(';'));
-  const blob = new Blob(['﻿'+[cab.join(';'),...lin].join('\r\n')], {type:'text/csv;charset=utf-8'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'observatorio_juventud_zipaquira.csv'; document.body.appendChild(a); a.click(); a.remove();
-}
-
 /* ================= PINTAR TODO ================= */
 function pintar(){
   const rows = filtrar();
-  pintarFiltros(); pintarKpis(rows); pintarGraficas(rows); pintarAnalisis(rows); pintarTabla(rows);
+  pintarFiltros(); pintarKpis(rows); pintarGraficas(rows); pintarComparar(); pintarAnalisis(rows); pintarTabla(rows);
 }
 
 /* ================= EVENTOS ================= */
@@ -534,7 +615,9 @@ $('btnLimpiar').onclick = () => { filtro={anio:'',periodo:'',secretaria:'',indic
 $('activos').onclick = e => { const k=e.target.dataset.k; if(k) setFiltro(k,''); };
 $('btnActualizar').onclick = () => cargar(true);
 $('modo').onclick = e => { const m=e.target.dataset.m; if(!m) return; modo=m;
-  [...$('modo').children].forEach(b=>b.classList.toggle('on', b.dataset.m===m)); pintarGraficas(filtrar()); };
+  [...$('modo').children].forEach(b=>b.classList.toggle('on', b.dataset.m===m)); pintarGraficas(filtrar()); pintarComparar(); };
+$('cA').onchange = e => { comp.a = e.target.value; pintarComparar(); };
+$('cB').onchange = e => { comp.b = e.target.value; pintarComparar(); };
 $('buscar').oninput = () => pintarTabla(filtrar());
 $('tabla').onclick = e => {
   const th = e.target.closest('th[data-k]');
@@ -543,10 +626,11 @@ $('tabla').onclick = e => {
 };
 $('anLista').onclick = e => { const b=e.target.closest('.mas'); if(b) abrirAnalisis(+b.dataset.i); };
 $('anMas').onclick = () => { anVisibles += 9; pintarAnalisis(filtrar()); };
-$('btnCsv').onclick = descargarCsv;
 $('mCerrar').onclick = () => $('modal').classList.remove('on');
 $('modal').onclick = e => { if(e.target.id==='modal') $('modal').classList.remove('on'); };
 document.addEventListener('keydown', e => { if(e.key==='Escape') $('modal').classList.remove('on'); });
+
+new IntersectionObserver(([e]) => $('barraFiltros').classList.toggle('pegado', !e.isIntersecting && e.boundingClientRect.top < 0)).observe($('filtros'));
 
 cargar(false);
 setInterval(()=>cargar(false), AUTO_REFRESCO_MIN*60*1000);
