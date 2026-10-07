@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Observatorio de Juventud de Zipaquirá: indicadores abiertos sobre jóvenes de 14 a 28 años.">
+<link rel="icon" href="logo.png">
+<title>Observatorio de Juventud · Zipaquirá</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --azul:#3A86FF; --azul-osc:#2563D9; --azul-noche:#0F2A66;
+    --amarillo:#FDFF3B; --verde:#B4F06B; --verde-osc:#7CC63A;
+    --coral:#F46B6B; --naranja:#FF6B2C;
+    --fondo:#F3F5FA; --tarjeta:#FFFFFF; --texto:#14204A; --suave:#5B6585; --linea:#E3E7F1;
+    --radio:22px; --sombra:0 10px 30px rgba(20,32,74,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Poppins',system-ui,sans-serif;background:var(--fondo);color:var(--texto);line-height:1.5;-webkit-font-smoothing:antialiased}
+  button,select,input{font-family:inherit}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 20px}
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative;overflow:hidden;background:var(--azul);color:#fff;padding:46px 0 70px}
+  .hero::before,.hero::after{content:"";position:absolute;border-radius:50%;pointer-events:none}
+  .hero::before{width:620px;height:620px;left:-260px;top:-180px;border:90px solid rgba(255,255,255,.07)}
+  .hero::after{width:520px;height:520px;right:-180px;top:-120px;border:80px solid rgba(255,255,255,.07)}
+  .hero .anillo{position:absolute;width:260px;height:260px;right:16%;bottom:-170px;border-radius:50%;border:50px solid rgba(255,255,255,.06)}
+  .hero-in{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:40px;align-items:center}
+  .logo{width:100%;max-width:480px;display:block;filter:drop-shadow(0 8px 18px rgba(10,30,90,.25))}
+  .hero h1{font-size:clamp(24px,3.2vw,38px);font-weight:900;line-height:1.1;letter-spacing:-.5px;text-transform:uppercase}
+  .hero h1 span{color:var(--amarillo)}
+  .hero p.lead{margin-top:14px;font-size:15.5px;opacity:.95;max-width:520px}
+  .hero-meta{margin-top:22px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .chip{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);padding:7px 14px;border-radius:999px;font-size:13px;font-weight:500}
+  .punto{width:8px;height:8px;border-radius:50%;background:var(--verde);box-shadow:0 0 0 4px rgba(180,240,107,.3);animation:latir 2s infinite}
+  @keyframes latir{50%{box-shadow:0 0 0 8px rgba(180,240,107,0)}}
+  .btn{border:0;cursor:pointer;border-radius:999px;font-weight:700;font-size:13.5px;padding:10px 18px;display:inline-flex;align-items:center;gap:8px;transition:transform .15s,box-shadow .15s}
+  .btn:hover{transform:translateY(-2px)}
+  .btn-am{background:var(--amarillo);color:var(--azul-noche);box-shadow:0 6px 16px rgba(0,0,0,.15)}
+  .btn-bl{background:#fff;color:var(--azul-noche);border:1.5px solid var(--linea)}
+  .franjas{display:grid;grid-template-columns:repeat(3,1fr);height:10px}
+  .franjas i:nth-child(1){background:var(--amarillo)} .franjas i:nth-child(2){background:var(--verde)} .franjas i:nth-child(3){background:var(--coral)}
+
+  /* ---------- FILTROS ---------- */
+  .filtros{position:sticky;top:0;z-index:20;margin-top:-34px}
+  .filtros-in{background:var(--tarjeta);border-radius:var(--radio);box-shadow:0 14px 40px rgba(20,32,74,.14);padding:16px 18px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) auto;gap:12px;align-items:end}
+  .campo label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--suave);margin:0 0 5px 4px}
+  .campo select{width:100%;appearance:none;border:1.5px solid var(--linea);background:#F8F9FD url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%233A86FF' stroke-width='2' fill='none'/%3E%3C/svg%3E") no-repeat right 14px center;padding:11px 36px 11px 14px;border-radius:14px;font-size:14px;font-weight:500;color:var(--texto);cursor:pointer;text-overflow:ellipsis}
+  .campo select:focus{outline:none;border-color:var(--azul);box-shadow:0 0 0 4px rgba(58,134,255,.15)}
+  .campo select.activo{border-color:var(--azul);background-color:#EEF4FF}
+  .filtros-acc{display:flex;gap:8px}
+  .activos{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;min-height:0}
+  .tag{background:var(--azul-noche);color:#fff;font-size:12px;font-weight:600;padding:5px 8px 5px 12px;border-radius:999px;display:inline-flex;gap:6px;align-items:center}
+  .tag button{background:rgba(255,255,255,.2);border:0;color:#fff;width:18px;height:18px;border-radius:50%;cursor:pointer;font-size:11px;line-height:1}
+
+  /* ---------- SECCIONES ---------- */
+  section{margin-top:38px}
+  .titulo-sec{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:16px;flex-wrap:wrap}
+  .titulo-sec h2{font-size:22px;font-weight:800;letter-spacing:-.3px}
+  .titulo-sec h2 small{display:block;font-size:13px;font-weight:500;color:var(--suave);letter-spacing:0;margin-top:2px}
+  .eyebrow{display:inline-block;font-size:11px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--azul);margin-bottom:4px}
+
+  /* KPIs */
+  .kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
+  .kpi{background:var(--tarjeta);border-radius:var(--radio);padding:18px;box-shadow:var(--sombra);position:relative;overflow:hidden}
+  .kpi::after{content:"";position:absolute;right:-22px;top:-22px;width:70px;height:70px;border-radius:50%;background:var(--c,var(--azul));opacity:.16}
+  .kpi .v{font-size:28px;font-weight:900;line-height:1.1;letter-spacing:-.5px}
+  .kpi .l{font-size:12.5px;color:var(--suave);font-weight:500;margin-top:4px}
+  .kpi.destacado{background:var(--azul);color:#fff;grid-column:span 2}
+  .kpi.destacado .l{color:rgba(255,255,255,.85)}
+  .kpi.destacado .v{font-size:40px;color:var(--amarillo)}
+  .kpi.destacado::after{background:#fff;opacity:.1;width:140px;height:140px;right:-40px;top:-50px}
+
+  /* GRÁFICAS */
+  .grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
+  .card{background:var(--tarjeta);border-radius:var(--radio);padding:20px 20px 16px;box-shadow:var(--sombra);min-width:0}
+  .card h3{font-size:15.5px;font-weight:700;display:flex;align-items:center;gap:10px}
+  .card h3::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--c,var(--azul));flex:none}
+  .card .sub{font-size:12.5px;color:var(--suave);margin:2px 0 12px 20px}
+  .lienzo{position:relative;height:250px}
+  .c4{grid-column:span 4}.c5{grid-column:span 5}.c6{grid-column:span 6}.c7{grid-column:span 7}.c8{grid-column:span 8}.c12{grid-column:span 12}
+  .alto .lienzo{height:320px}
+  .toggle{display:inline-flex;background:#fff;border:1.5px solid var(--linea);border-radius:999px;padding:3px}
+  .toggle button{border:0;background:transparent;padding:6px 14px;border-radius:999px;font-size:12.5px;font-weight:600;color:var(--suave);cursor:pointer}
+  .toggle button.on{background:var(--azul-noche);color:#fff}
+  .pista{font-size:12px;color:var(--suave);margin-top:8px;text-align:right}
+
+  /* TABLA */
+  .tabla-card{padding:0;overflow:hidden}
+  .tabla-top{display:flex;gap:12px;justify-content:space-between;align-items:center;padding:16px 18px;flex-wrap:wrap;border-bottom:1px solid var(--linea)}
+  .buscar{flex:1;min-width:200px;max-width:380px;border:1.5px solid var(--linea);border-radius:14px;padding:10px 14px;font-size:14px;background:#F8F9FD}
+  .buscar:focus{outline:none;border-color:var(--azul)}
+  .tabla-scroll{overflow:auto;max-height:560px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{position:sticky;top:0;background:var(--azul-noche);color:#fff;font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.4px;padding:11px 10px;text-align:right;white-space:nowrap;cursor:pointer;user-select:none}
+  th:nth-child(-n+3){text-align:left}
+  th .flecha{opacity:.5;font-size:10px}
+  td{padding:10px;border-bottom:1px solid var(--linea);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  td:nth-child(-n+3){text-align:left;white-space:normal}
+  td:nth-child(2){min-width:240px;font-weight:500}
+  tbody tr:nth-child(even){background:#FAFBFE}
+  tbody tr:hover{background:#EEF4FF}
+  .t-total{font-weight:800;color:var(--azul-osc)}
+  .pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:600;background:#EEF4FF;color:var(--azul-osc);white-space:nowrap}
+  .ver-an{border:0;background:var(--verde);color:var(--azul-noche);font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;cursor:pointer}
+  .vacio{padding:40px;text-align:center;color:var(--suave)}
+
+  /* ANÁLISIS */
+  .analisis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+  .an{background:var(--tarjeta);border-radius:var(--radio);padding:18px;box-shadow:var(--sombra);border-top:6px solid var(--c,var(--azul));display:flex;flex-direction:column;gap:8px}
+  .an .meta{display:flex;gap:6px;flex-wrap:wrap}
+  .an h4{font-size:14px;font-weight:700;line-height:1.35}
+  .an p{font-size:13.5px;color:#36406A;white-space:pre-line}
+  .an p.corto{display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden}
+  .an .mas{align-self:flex-start;border:0;background:none;color:var(--azul-osc);font-weight:700;font-size:12.5px;cursor:pointer;padding:0}
+
+  .nota{margin-top:14px;font-size:12.5px;color:var(--suave);background:#fff;border-left:4px solid var(--amarillo);padding:10px 14px;border-radius:10px}
+
+  /* MODAL */
+  .modal{position:fixed;inset:0;background:rgba(15,42,102,.55);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+  .modal.on{display:flex}
+  .modal-in{background:#fff;border-radius:var(--radio);max-width:640px;width:100%;max-height:85vh;overflow:auto;padding:26px;position:relative}
+  .modal-in .cerrar{position:absolute;right:16px;top:14px;border:0;background:var(--fondo);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:16px}
+  .modal-in h4{font-size:17px;padding-right:40px;margin:8px 0 12px}
+  .modal-in p{white-space:pre-line;font-size:14.5px;color:#36406A}
+
+  /* ESTADOS */
+  .cargando{position:fixed;inset:0;background:var(--azul);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;z-index:100;color:#fff;transition:opacity .4s}
+  .cargando img{width:min(320px,70vw);animation:flotar 1.6s ease-in-out infinite}
+  @keyframes flotar{50%{transform:translateY(-8px)}}
+  .cargando.fuera{opacity:0;pointer-events:none}
+  .error{display:none;background:#FFF0F0;border:1.5px solid var(--coral);color:#8A1F1F;padding:14px 18px;border-radius:14px;margin-top:20px;font-size:14px}
+
+  footer{margin-top:56px;background:var(--azul-noche);color:rgba(255,255,255,.75);padding:22px 0 26px;text-align:center}
+  footer .creditos{font-size:9.5px;letter-spacing:.3px;line-height:1.6}
+  footer .franjas{height:5px;margin-bottom:20px}
+
+  @media (max-width:1050px){
+    .kpis{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .c4,.c5,.c7{grid-column:span 6}.c8{grid-column:span 12}
+    .analisis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  }
+  @media (max-width:820px){
+    .hero-in{grid-template-columns:1fr;text-align:center;gap:22px}
+    .logo{margin:0 auto;max-width:340px}
+    .hero p.lead{margin-left:auto;margin-right:auto}
+    .hero-meta{justify-content:center}
+    .filtros{position:static}
+    .filtros-in{grid-template-columns:1fr 1fr}
+    .filtros-acc{grid-column:1/-1}
+    .filtros-acc .btn{flex:1;justify-content:center}
+    .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .c4,.c5,.c6,.c7,.c8{grid-column:span 12}
+    .analisis{grid-template-columns:1fr}
+  }
+  @media (max-width:480px){
+    .wrap{padding:0 16px}
+    .filtros-in{grid-template-columns:1fr}
+    .kpi.destacado .v{font-size:32px}
+  }
+</style>
+</head>
+<body>
+
+<div class="cargando" id="cargando">
+  <img src="logo.png" alt="">
+  <div style="font-weight:600;font-size:14px;opacity:.9">Cargando indicadores…</div>
+</div>
+
+<header class="hero">
+  <div class="anillo"></div>
+  <div class="wrap hero-in">
+    <img class="logo" src="logo.png" alt="Observatorio de Juventud de Zipaquirá">
+    <div>
+      <h1>Datos que cuentan la historia de las <span>juventudes</span> de Zipaquirá</h1>
+      <p class="lead">Consulta, filtra y descarga los indicadores que reportan las secretarías de la Alcaldía sobre jóvenes de 14 a 28 años. Información abierta para investigar, proponer y construir proyectos.</p>
+      <div class="hero-meta">
+        <span class="chip"><span class="punto"></span><span id="actualizado">Conectando…</span></span>
+        <button class="btn btn-am" id="btnActualizar">↻ Actualizar datos</button>
+      </div>
+    </div>
+  </div>
+</header>
+<div class="franjas"><i></i><i></i><i></i></div>
+
+<div class="filtros">
+  <div class="wrap">
+    <div class="filtros-in">
+      <div class="campo"><label for="fAnio">Año</label><select id="fAnio"></select></div>
+      <div class="campo"><label for="fPeriodo">Periodo</label><select id="fPeriodo"></select></div>
+      <div class="campo"><label for="fSecretaria">Secretaría</label><select id="fSecretaria"></select></div>
+      <div class="campo"><label for="fIndicador">Indicador</label><select id="fIndicador"></select></div>
+      <div class="filtros-acc">
+        <button class="btn btn-bl" id="btnLimpiar">Limpiar</button>
+      </div>
+    </div>
+    <div class="activos" id="activos"></div>
+  </div>
+</div>
+
+<main class="wrap">
+  <div class="error" id="error"></div>
+
+  <!-- RESUMEN -->
+  <section id="resumen">
+    <div class="titulo-sec"><div><span class="eyebrow">Resumen</span><h2>Panorama general<small id="contexto">Todos los indicadores reportados</small></h2></div></div>
+    <div class="kpis">
+      <div class="kpi destacado"><div class="v" id="kTotal">0</div><div class="l">Jóvenes reportados en los indicadores</div></div>
+      <div class="kpi" style="--c:var(--coral)"><div class="v" id="kInd">0</div><div class="l">Indicadores</div></div>
+      <div class="kpi" style="--c:var(--naranja)"><div class="v" id="kSec">0</div><div class="l">Secretarías que reportan</div></div>
+      <div class="kpi" style="--c:var(--verde-osc)"><div class="v" id="kMuj">0%</div><div class="l">Son mujeres</div></div>
+      <div class="kpi" style="--c:var(--azul)"><div class="v" id="kRur">0%</div><div class="l">Viven en zona rural</div></div>
+    </div>
+    <div class="nota">Las cifras suman los jóvenes reportados en cada indicador y periodo. Una misma persona puede aparecer en varios indicadores, por eso el total corresponde a <b>atenciones o participaciones</b>, no necesariamente a personas distintas.</div>
+  </section>
+
+  <!-- PERFIL -->
+  <section id="perfil">
+    <div class="titulo-sec">
+      <div><span class="eyebrow">¿Quiénes son?</span><h2>Perfil de las juventudes atendidas<small>Distribución según los filtros que elegiste</small></h2></div>
+      <div class="toggle" id="modo"><button class="on" data-m="n">Número</button><button data-m="p">Porcentaje</button></div>
+    </div>
+    <div class="grid">
+      <div class="card c4" style="--c:var(--coral)"><h3>Sexo y género</h3><div class="sub">Hombres, mujeres y personas no binarias</div><div class="lienzo"><canvas id="gSexo"></canvas></div></div>
+      <div class="card c4" style="--c:var(--naranja)"><h3>Grupos de edad</h3><div class="sub">Rangos de la Ley 1622 de 2013</div><div class="lienzo"><canvas id="gEdad"></canvas></div></div>
+      <div class="card c4" style="--c:var(--verde-osc)"><h3>Zona donde viven</h3><div class="sub">Rural y urbana</div><div class="lienzo"><canvas id="gZona"></canvas></div></div>
+      <div class="card c12" style="--c:var(--azul)"><h3>Enfoque diferencial</h3><div class="sub">Jóvenes con condiciones o pertenencias que requieren atención especial</div><div class="lienzo" style="height:220px"><canvas id="gDif"></canvas></div></div>
+    </div>
+  </section>
+
+  <!-- EVOLUCIÓN Y SECRETARÍAS -->
+  <section id="tendencias">
+    <div class="titulo-sec"><div><span class="eyebrow">¿Cómo cambia?</span><h2>Evolución y responsables<small>Toca una barra para filtrar por ese periodo o secretaría</small></h2></div></div>
+    <div class="grid">
+      <div class="card c7 alto" style="--c:var(--azul)"><h3>Jóvenes por periodo</h3><div class="sub">Por sexo y género, en orden de tiempo</div><div class="lienzo"><canvas id="gPeriodo"></canvas></div></div>
+      <div class="card c5 alto" style="--c:var(--coral)"><h3>Jóvenes por secretaría</h3><div class="sub">Total reportado por cada dependencia</div><div class="lienzo"><canvas id="gSecretaria"></canvas></div></div>
+      <div class="card c12 alto" style="--c:var(--naranja)"><h3>Indicadores con más jóvenes</h3><div class="sub">Los 10 indicadores con mayor número reportado · toca uno para verlo en detalle</div><div class="lienzo"><canvas id="gTop"></canvas></div></div>
+    </div>
+  </section>
+
+  <!-- ANÁLISIS -->
+  <section id="analisis">
+    <div class="titulo-sec"><div><span class="eyebrow">¿Qué dicen las secretarías?</span><h2>Análisis por trimestre<small id="anContador"></small></h2></div></div>
+    <div class="analisis" id="anLista"></div>
+    <div style="text-align:center;margin-top:16px"><button class="btn btn-bl" id="anMas" style="display:none">Ver más análisis</button></div>
+  </section>
+
+  <!-- TABLA -->
+  <section id="datos">
+    <div class="titulo-sec"><div><span class="eyebrow">Datos abiertos</span><h2>Explora la base de datos<small>Descarga los datos filtrados para tus investigaciones o proyectos</small></h2></div></div>
+    <div class="card tabla-card">
+      <div class="tabla-top">
+        <input class="buscar" id="buscar" placeholder="Buscar indicador, secretaría o periodo…">
+        <button class="btn btn-am" id="btnCsv">⬇ Descargar CSV (Excel)</button>
+      </div>
+      <div class="tabla-scroll"><table id="tabla"><thead></thead><tbody></tbody></table></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="franjas"><i></i><i></i><i></i></div>
+  <div class="wrap creditos">
+    Realizado por Julieth Andrea Rivera · vr. 3 · Secretaría de Familia y Desarrollo Social · Programa de Juventud Parche Zipa · Alcaldía de Zipaquirá · 2026
+  </div>
+</footer>
+
+<div class="modal" id="modal"><div class="modal-in"><button class="cerrar" id="mCerrar">✕</button><div id="mMeta" class="meta" style="display:flex;gap:6px;flex-wrap:wrap"></div><h4 id="mTitulo"></h4><p id="mTexto"></p></div></div>
+
+<script>
+/* ================= CONFIGURACIÓN ================= */
+// URL de la implementación de Apps Script (termina en /exec)
+const API_URL = 'https://script.google.com/macros/s/AKfycbzlI4XTBTnnG5mPzdtg5NC3p-q_I15rwXEIXiz_qlCgBNYUX8DXFaxo_3zC4c43XYlb/exec';
+const C = {azul:'#3A86FF', azulN:'#0F2A66', amarillo:'#F5E62B', verde:'#8FD94A', coral:'#F46B6B', naranja:'#FF6B2C', suave:'#5B6585', linea:'#E3E7F1'};
+const PALETA = [C.coral, C.naranja, C.verde, C.azul, C.amarillo, C.azulN];
+const AUTO_REFRESCO_MIN = 5;
+
+const CAMPOS = [
+  ['periodo','Periodo'],['indicador','Indicador'],['secretaria','Secretaría'],['total','Total'],
+  ['hombres','Hombres'],['mujeres','Mujeres'],['nobinarios','No binarios'],
+  ['e14_17','14–17'],['e18_20','18–20'],['e21_24','21–24'],['e25_28','25–28'],
+  ['rural','Rural'],['urbana','Urbana'],['discapacidad','Discap. y NEE'],['victimas','Víctimas'],
+  ['extranjera','Extranjera'],['calle','Hab. calle']
+];
+
+let DATOS = [], filtro = {anio:'',periodo:'',secretaria:'',indicador:''}, modo = 'n';
+let orden = {campo:'periodo', dir:1}, anVisibles = 9, graficas = {};
+
+/* ================= UTILIDADES ================= */
+const $ = id => document.getElementById(id);
+const fmt = n => Math.round(n).toLocaleString('es-CO');
+const pct = (a,b) => b ? (a*100/b) : 0;
+const suma = (rows,k) => rows.reduce((s,r)=>s+(+r[k]||0),0);
+const unicos = (rows,k) => [...new Set(rows.map(r=>r[k]).filter(Boolean))];
+const esc = t => String(t??'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function claveTiempo(r){
+  const t = (r.periodo||'').toLowerCase();
+  const anio = parseInt(r.anio) || parseInt((t.match(/20\d\d/)||[])[0]) || 0;
+  let q = 9;
+  const m = t.match(/(?:t|trim\w*|q)\s*([1-4])\b|\b([1-4])\s*(?:er|do|ro|to|°|º)?\s*trim/);
+  if (m) q = +(m[1]||m[2]);
+  else if (/\biv\b/.test(t)) q=4; else if (/\biii\b/.test(t)) q=3; else if (/\bii\b/.test(t)) q=2; else if (/\bi\b/.test(t)) q=1;
+  else { const meses=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+         const i = meses.findIndex(x=>t.includes(x)); if(i>-1) q = Math.floor(i/3)+1; }
+  return anio*10+q;
+}
+const etiquetaPeriodo = r => (r.anio && !String(r.periodo).includes(r.anio)) ? `${r.periodo} ${r.anio}` : r.periodo;
+
+/* ================= CARGA ================= */
+function cargar(forzar){
+  $('actualizado').textContent = 'Actualizando…';
+  fetch(API_URL + '?api=1' + (forzar ? '&forzar=1' : '') + '&t=' + Date.now())
+    .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(d => {
+      DATOS = d.filas.map(r => ({...r, _p: etiquetaPeriodo(r), _k: claveTiempo(r)}));
+      $('actualizado').textContent = 'Datos en vivo · actualizado el ' + d.actualizado;
+      $('error').style.display = 'none';
+      if (!DATOS.length) mostrarError('No se encontraron filas con datos. Revisa que el Google Sheets tenga la columna "Hombres" en los encabezados.');
+      pintar();
+      $('cargando').classList.add('fuera');
+    })
+    .catch(e => { mostrarError('No pudimos leer los datos: ' + e.message); $('cargando').classList.add('fuera'); $('actualizado').textContent='Sin conexión'; });
+}
+function mostrarError(m){ const e=$('error'); e.textContent=m; e.style.display='block'; }
+
+/* ================= FILTROS ================= */
+function filtrar(excepto){
+  return DATOS.filter(r =>
+    (excepto==='anio'       || !filtro.anio       || r.anio===filtro.anio) &&
+    (excepto==='periodo'    || !filtro.periodo    || r._p===filtro.periodo) &&
+    (excepto==='secretaria' || !filtro.secretaria || r.secretaria===filtro.secretaria) &&
+    (excepto==='indicador'  || !filtro.indicador  || r.indicador===filtro.indicador));
+}
+function llenarSelect(id, campo, texto, ordenar){
+  let ops = unicos(filtrar(campo), campo==='periodo'?'_p':campo);
+  if (ordenar) ops.sort(ordenar); else ops.sort((a,b)=>a.localeCompare(b,'es'));
+  const actual = filtro[campo];
+  if (actual && !ops.includes(actual)) ops.unshift(actual);
+  const s = $(id);
+  s.innerHTML = `<option value="">${texto}</option>` + ops.map(o=>`<option ${o===actual?'selected':''} value="${esc(o)}">${esc(o)}</option>`).join('');
+  s.classList.toggle('activo', !!actual);
+}
+function pintarFiltros(){
+  llenarSelect('fAnio','anio','Todos los años',(a,b)=>b.localeCompare(a));
+  const k = {}; DATOS.forEach(r=>k[r._p]=r._k);
+  llenarSelect('fPeriodo','periodo','Todos los periodos',(a,b)=>k[a]-k[b]);
+  llenarSelect('fSecretaria','secretaria','Todas las secretarías');
+  llenarSelect('fIndicador','indicador','Todos los indicadores');
+  const nombres = {anio:'Año',periodo:'Periodo',secretaria:'Secretaría',indicador:'Indicador'};
+  $('activos').innerHTML = Object.keys(filtro).filter(k=>filtro[k]).map(k=>
+    `<span class="tag">${nombres[k]}: ${esc(filtro[k].length>48?filtro[k].slice(0,48)+'…':filtro[k])}<button data-k="${k}" aria-label="Quitar">✕</button></span>`).join('');
+  const partes = Object.keys(filtro).filter(k=>filtro[k]).map(k=>filtro[k]);
+  $('contexto').textContent = partes.length ? partes.join(' · ') : 'Todos los indicadores reportados';
+}
+function setFiltro(k,v){ filtro[k]=v; anVisibles=9; pintar(); }
+
+/* ================= GRÁFICAS ================= */
+Chart.defaults.font.family = "'Poppins', sans-serif";
+Chart.defaults.font.size = 12;
+Chart.defaults.color = C.suave;
+Chart.defaults.plugins.legend.labels.usePointStyle = true;
+Chart.defaults.plugins.legend.labels.pointStyle = 'circle';
+Chart.defaults.plugins.tooltip.backgroundColor = C.azulN;
+Chart.defaults.plugins.tooltip.padding = 12;
+Chart.defaults.plugins.tooltip.cornerRadius = 12;
+Chart.defaults.plugins.tooltip.titleFont = {weight:'700'};
+
+const ejes = (horizontal, porcentaje) => {
+  const valor = {grid:{color:C.linea}, border:{display:false}, beginAtZero:true,
+    ticks:{callback:v=>porcentaje? v+'%' : fmt(v)}};
+  const cat = {grid:{display:false}, border:{display:false},
+    ticks:{autoSkip:false, callback:function(v){const l=this.getLabelForValue(v);return l.length>32?l.slice(0,32)+'…':l;}}};
+  return horizontal ? {x:valor, y:cat} : {x:cat, y:valor};
+};
+const tipTexto = (porcentaje,total) => ({callbacks:{label:c=>{
+  const v = c.parsed.y ?? c.parsed; const val = typeof c.raw==='number'?c.raw:v;
+  return ` ${c.dataset.label||c.label}: ${porcentaje? val.toFixed(1)+'%' : fmt(val)}${!porcentaje&&total? ' ('+pct(val,total).toFixed(1)+'%)':''}`;}}});
+
+function grafica(id, config){
+  if (graficas[id]) { graficas[id].data = config.data; graficas[id].options = config.options; graficas[id].update(); }
+  else graficas[id] = new Chart($(id), config);
+}
+function dona(id, etiquetas, valores, colores){
+  const total = valores.reduce((a,b)=>a+b,0);
+  const datos = modo==='p' ? valores.map(v=>pct(v,total)) : valores;
+  grafica(id, {type:'doughnut',
+    data:{labels:etiquetas, datasets:[{data:datos, backgroundColor:colores, borderColor:'#fff', borderWidth:3, hoverOffset:8}]},
+    options:{maintainAspectRatio:false, cutout:'62%', plugins:{legend:{position:'bottom'},
+      tooltip:{callbacks:{label:c=>` ${c.label}: ${modo==='p'?c.raw.toFixed(1)+'%':fmt(c.raw)+' ('+pct(c.raw,total).toFixed(1)+'%)'}`}}}},
+    plugins:[centro(total)]});
+}
+const centro = total => ({id:'centro', afterDraw(ch){
+  const {ctx, chartArea:a} = ch; if(!a) return; ctx.save();
+  const x=(a.left+a.right)/2, y=(a.top+a.bottom)/2;
+  ctx.textAlign='center'; ctx.fillStyle=C.azulN; ctx.font="800 20px Poppins"; ctx.fillText(fmt(total), x, y+2);
+  ctx.fillStyle=C.suave; ctx.font="500 11px Poppins"; ctx.fillText('jóvenes', x, y+18); ctx.restore();}});
+
+function barras(id, etiquetas, valores, colores, horizontal, alClic){
+  const total = valores.reduce((a,b)=>a+b,0);
+  const datos = modo==='p' ? valores.map(v=>pct(v,total)) : valores;
+  grafica(id, {type:'bar',
+    data:{labels:etiquetas, datasets:[{label:'Jóvenes', data:datos, backgroundColor:colores, borderRadius:10, borderSkipped:false, maxBarThickness:46}]},
+    options:{indexAxis:horizontal?'y':'x', maintainAspectRatio:false, scales:ejes(horizontal, modo==='p'),
+      plugins:{legend:{display:false}, tooltip:tipTexto(modo==='p', total)},
+      onClick:(e,el)=>{ if(alClic && el.length) alClic(etiquetas[el[0].index]); },
+      onHover:(e,el)=>{ e.native.target.style.cursor = (alClic&&el.length)?'pointer':'default'; }}});
+}
+
+function pintarGraficas(rows){
+  const total = suma(rows,'total');
+  dona('gSexo', ['Hombres','Mujeres','No binarios'], ['hombres','mujeres','nobinarios'].map(k=>suma(rows,k)), [C.azul, C.coral, C.verde]);
+  barras('gEdad', ['14 a 17','18 a 20','21 a 24','25 a 28'], ['e14_17','e18_20','e21_24','e25_28'].map(k=>suma(rows,k)), [C.coral,C.naranja,C.verde,C.azul]);
+  dona('gZona', ['Rural','Urbana'], [suma(rows,'rural'), suma(rows,'urbana')], [C.verde, C.azul]);
+
+  // Enfoque diferencial: % sobre el total de jóvenes
+  const dif = ['discapacidad','victimas','extranjera','calle'].map(k=>suma(rows,k));
+  const etqDif = ['Discapacidad y NEE','Víctimas del conflicto','Población extranjera','Habitante de calle'];
+  const datosDif = modo==='p' ? dif.map(v=>pct(v,total)) : dif;
+  grafica('gDif', {type:'bar',
+    data:{labels:etqDif, datasets:[{label:'Jóvenes', data:datosDif, backgroundColor:[C.coral,C.naranja,C.azul,C.verde], borderRadius:10, borderSkipped:false, maxBarThickness:34}]},
+    options:{indexAxis:'y', maintainAspectRatio:false, scales:ejes(true, modo==='p'),
+      plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>modo==='p'
+        ? ` ${c.raw.toFixed(2)}% del total de jóvenes reportados`
+        : ` ${fmt(c.raw)} jóvenes (${pct(c.raw,total).toFixed(2)}% del total)`}}}}});
+
+  // Evolución por periodo (apilada por sexo)
+  const periodos = unicos(rows,'_p'); const kk={}; rows.forEach(r=>kk[r._p]=r._k);
+  periodos.sort((a,b)=>kk[a]-kk[b]);
+  const serie = (k,lab,col) => {
+    const vals = periodos.map(p=>suma(rows.filter(r=>r._p===p),k));
+    const tot = periodos.map(p=>suma(rows.filter(r=>r._p===p),'total'));
+    return {label:lab, data: modo==='p' ? vals.map((v,i)=>pct(v,tot[i])) : vals, backgroundColor:col, borderRadius:6, borderSkipped:false, maxBarThickness:56};
+  };
+  grafica('gPeriodo', {type:'bar',
+    data:{labels:periodos, datasets:[serie('hombres','Hombres',C.azul), serie('mujeres','Mujeres',C.coral), serie('nobinarios','No binarios',C.verde)]},
+    options:{maintainAspectRatio:false, scales:{...ejes(false, modo==='p'), x:{...ejes(false).x, stacked:true}, y:{...ejes(false, modo==='p').y, stacked:true, max: modo==='p'?100:undefined}},
+      plugins:{legend:{position:'bottom'}, tooltip:{mode:'index', intersect:false, callbacks:{label:c=>` ${c.dataset.label}: ${modo==='p'?c.raw.toFixed(1)+'%':fmt(c.raw)}`}}},
+      onClick:(e,el)=>{ if(el.length) setFiltro('periodo', periodos[el[0].index]); },
+      onHover:(e,el)=>{ e.native.target.style.cursor = el.length?'pointer':'default'; }}});
+
+  // Por secretaría
+  const secs = unicos(rows,'secretaria').map(s=>[s, suma(rows.filter(r=>r.secretaria===s),'total')]).sort((a,b)=>b[1]-a[1]);
+  barras('gSecretaria', secs.map(s=>s[0]), secs.map(s=>s[1]), secs.map((s,i)=>PALETA[i%4]), true, v=>setFiltro('secretaria', v));
+
+  // Top indicadores
+  const inds = unicos(rows,'indicador').map(s=>[s, suma(rows.filter(r=>r.indicador===s),'total')]).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  barras('gTop', inds.map(s=>s[0]), inds.map(s=>s[1]), inds.map((s,i)=>PALETA[i%4]), true, v=>setFiltro('indicador', v));
+}
+
+/* ================= KPIs ================= */
+function anima(el, valor, sufijo=''){
+  const ini = +el.dataset.v || 0, t0 = performance.now(), dur = 700;
+  el.dataset.v = valor;
+  const paso = t => { const p = Math.min(1,(t-t0)/dur), e = 1-Math.pow(1-p,3), v = ini+(valor-ini)*e;
+    el.textContent = (sufijo==='%'? v.toFixed(1) : fmt(v)) + sufijo; if(p<1) requestAnimationFrame(paso); };
+  requestAnimationFrame(paso);
+}
+function pintarKpis(rows){
+  const total = suma(rows,'total');
+  anima($('kTotal'), total);
+  anima($('kInd'), unicos(rows,'indicador').length);
+  anima($('kSec'), unicos(rows,'secretaria').length);
+  const sexo = suma(rows,'hombres')+suma(rows,'mujeres')+suma(rows,'nobinarios');
+  anima($('kMuj'), pct(suma(rows,'mujeres'), sexo), '%');
+  const zona = suma(rows,'rural')+suma(rows,'urbana');
+  anima($('kRur'), pct(suma(rows,'rural'), zona), '%');
+}
+
+/* ================= ANÁLISIS ================= */
+function pintarAnalisis(rows){
+  const con = rows.filter(r=>r.analisis && r.analisis.length>3).sort((a,b)=>b._k-a._k);
+  $('anContador').textContent = con.length ? `${con.length} análisis escritos por las secretarías` : 'Aún no hay análisis para esta selección';
+  $('anLista').innerHTML = con.slice(0, anVisibles).map((r,i)=>`
+    <article class="an" style="--c:${PALETA[i%4]}">
+      <div class="meta"><span class="pill">${esc(r._p)}</span><span class="pill" style="background:#F1FBE6;color:#3E7A12">${esc(r.secretaria)}</span></div>
+      <h4>${esc(r.indicador)}</h4>
+      <p class="corto">${esc(r.analisis)}</p>
+      ${r.analisis.length>320?`<button class="mas" data-i="${DATOS.indexOf(r)}">Leer completo →</button>`:''}
+    </article>`).join('') || '<div class="vacio" style="grid-column:1/-1">Cuando las secretarías escriban su análisis del trimestre, aparecerá aquí.</div>';
+  $('anMas').style.display = con.length > anVisibles ? 'inline-flex' : 'none';
+}
+function abrirAnalisis(i){
+  const r = DATOS[i];
+  $('mMeta').innerHTML = `<span class="pill">${esc(r._p)}</span><span class="pill" style="background:#F1FBE6;color:#3E7A12">${esc(r.secretaria)}</span>`;
+  $('mTitulo').textContent = r.indicador; $('mTexto').textContent = r.analisis;
+  $('modal').classList.add('on');
+}
+
+/* ================= TABLA ================= */
+function filasTabla(rows){
+  const q = $('buscar').value.trim().toLowerCase();
+  let t = q ? rows.filter(r=>[r.indicador,r.secretaria,r._p,r.programa].join(' ').toLowerCase().includes(q)) : rows.slice();
+  const c = orden.campo;
+  t.sort((a,b)=>{
+    if (c==='periodo') return (a._k-b._k)*orden.dir;
+    const x=a[c], y=b[c]; return (typeof x==='number' ? x-y : String(x).localeCompare(String(y),'es'))*orden.dir;});
+  return t;
+}
+function pintarTabla(rows){
+  $('tabla').tHead.innerHTML = '<tr>' + CAMPOS.map(([k,l])=>`<th data-k="${k}">${l} <span class="flecha">${orden.campo===k?(orden.dir>0?'▲':'▼'):'↕'}</span></th>`).join('') + '<th>Análisis</th></tr>';
+  const t = filasTabla(rows);
+  $('tabla').tBodies[0].innerHTML = t.length ? t.map(r=>'<tr>'+CAMPOS.map(([k])=>{
+      if (k==='periodo') return `<td><span class="pill">${esc(r._p)}</span></td>`;
+      if (k==='indicador'||k==='secretaria') return `<td>${esc(r[k])}</td>`;
+      return `<td class="${k==='total'?'t-total':''}">${fmt(r[k])}</td>`;
+    }).join('') + `<td>${r.analisis?`<button class="ver-an" data-i="${DATOS.indexOf(r)}">Ver</button>`:'—'}</td></tr>`).join('')
+    : `<tr><td colspan="${CAMPOS.length+1}" class="vacio">No hay datos con estos filtros.</td></tr>`;
+}
+function descargarCsv(){
+  const rows = filasTabla(filtrar());
+  const cab = ['Año',...CAMPOS.map(c=>c[1]),'Análisis'];
+  const lin = rows.map(r=>[r.anio,...CAMPOS.map(([k])=>k==='periodo'?r.periodo:r[k]), r.analisis||'']
+    .map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(';'));
+  const blob = new Blob(['﻿'+[cab.join(';'),...lin].join('\r\n')], {type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'observatorio_juventud_zipaquira.csv'; document.body.appendChild(a); a.click(); a.remove();
+}
+
+/* ================= PINTAR TODO ================= */
+function pintar(){
+  const rows = filtrar();
+  pintarFiltros(); pintarKpis(rows); pintarGraficas(rows); pintarAnalisis(rows); pintarTabla(rows);
+}
+
+/* ================= EVENTOS ================= */
+[['fAnio','anio'],['fPeriodo','periodo'],['fSecretaria','secretaria'],['fIndicador','indicador']]
+  .forEach(([id,k])=>$(id).addEventListener('change', e=>setFiltro(k, e.target.value)));
+$('btnLimpiar').onclick = () => { filtro={anio:'',periodo:'',secretaria:'',indicador:''}; $('buscar').value=''; anVisibles=9; pintar(); };
+$('activos').onclick = e => { const k=e.target.dataset.k; if(k) setFiltro(k,''); };
+$('btnActualizar').onclick = () => cargar(true);
+$('modo').onclick = e => { const m=e.target.dataset.m; if(!m) return; modo=m;
+  [...$('modo').children].forEach(b=>b.classList.toggle('on', b.dataset.m===m)); pintarGraficas(filtrar()); };
+$('buscar').oninput = () => pintarTabla(filtrar());
+$('tabla').onclick = e => {
+  const th = e.target.closest('th[data-k]');
+  if (th) { const k=th.dataset.k; orden = {campo:k, dir: orden.campo===k ? -orden.dir : (['periodo','indicador','secretaria'].includes(k)?1:-1)}; pintarTabla(filtrar()); }
+  const b = e.target.closest('.ver-an'); if (b) abrirAnalisis(+b.dataset.i);
+};
+$('anLista').onclick = e => { const b=e.target.closest('.mas'); if(b) abrirAnalisis(+b.dataset.i); };
+$('anMas').onclick = () => { anVisibles += 9; pintarAnalisis(filtrar()); };
+$('btnCsv').onclick = descargarCsv;
+$('mCerrar').onclick = () => $('modal').classList.remove('on');
+$('modal').onclick = e => { if(e.target.id==='modal') $('modal').classList.remove('on'); };
+document.addEventListener('keydown', e => { if(e.key==='Escape') $('modal').classList.remove('on'); });
+
+cargar(false);
+setInterval(()=>cargar(false), AUTO_REFRESCO_MIN*60*1000);
+</script>
+</body>
+</html>
